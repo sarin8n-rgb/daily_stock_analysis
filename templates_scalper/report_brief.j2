@@ -1,0 +1,97 @@
+{#- Scalper sheet: daily context for 1-minute small-cap scalping. Used when REPORT_TYPE=brief. -#}
+{%- macro clean(s) -%}
+{%- set t = (s ~ '')|trim -%}
+{%- if t[:4] in ['Risk', 'Cata', 'Cond'] and ': ' in t[:16] -%}{%- set t = t.split(': ', 1)[1] -%}{%- endif -%}
+{{ t|replace(' (', ' - ')|replace('(', '')|replace(')', '')|replace('[', '')|replace(']', '')|trim }}
+{%- endmacro -%}
+{%- macro vol(v) -%}
+{%- set s = ('' if v is none else v ~ '')|trim -%}
+{%- if '亿股' in s -%}{{ '%.2f'|format(s|replace('亿股', '')|trim|float(0) * 100) }}M shares
+{%- elif '万股' in s -%}{{ '%.2f'|format(s|replace('万股', '')|trim|float(0) / 100) }}M shares
+{%- elif '股' in s -%}{{ s|replace('股', '')|trim }} shares
+{%- else -%}{{ s or 'N/A' }}
+{%- endif -%}
+{%- endmacro -%}
+🎯 **{{ report_date }} Scalper Sheet**
+{{ results|length }} stocks | 🟢 Buy {{ buy_count }} | 🟡 Watch {{ hold_count }} | 🔴 Sell {{ sell_count }}
+{%- if market_status_line %}
+{{ clean(market_status_line) }}
+{%- endif %}
+{%- for e in enriched %}
+{%- set result = e.result %}
+{%- set dash = result.dashboard or {} %}
+{%- set intel = dash.get('intelligence') or {} %}
+{%- set persp = dash.get('data_perspective') or {} %}
+{%- set pos = persp.get('price_position') or {} %}
+{%- set vdata = persp.get('volume_analysis') or {} %}
+{%- set phase = dash.get('phase_decision') or {} %}
+{%- set snap = result.market_snapshot or {} %}
+{%- set lv = [] %}
+{%- for label, raw in [('Resistance', pos.get('resistance_level')), ('Support', pos.get('support_level')), ('Day high', snap.get('high')), ('Day low', snap.get('low')), ('Day open', snap.get('open')), ('Day close', snap.get('close')), ('Prior close', snap.get('prev_close'))] %}
+{%- set p = (raw ~ '')|replace('$', '')|trim|float(0) %}
+{%- if p > 0 %}
+{%- set _ = lv.append({'label': label, 'p': p}) %}
+{%- endif %}
+{%- endfor %}
+
+━━━━━━━━━━━━━━
+**{{ result.code }}** {{ e.stock_name }}
+{{ e.signal_emoji }} {{ clean(e.signal_text) }} | Score {{ result.sentiment_score }}
+
+📍 **KEY LEVELS**{% if snap.get('date') %} from {{ snap.get('date') }}{% endif %}
+{%- for item in lv|sort(attribute='p', reverse=true) %}
+{{ '%.2f'|format(item.p) }}  {{ item.label }}
+{%- else %}
+No price levels available
+{%- endfor %}
+
+⚡ **VOLATILITY**
+Day range {{ snap.get('amplitude') or 'N/A' }} | Change {{ snap.get('pct_chg') or 'N/A' }}
+
+📊 **VOLUME**
+{{ vol(snap.get('volume')) }} | Rel vol {{ snap.get('volume_ratio') or vdata.get('volume_ratio') or 'N/A' }}
+{%- if vdata.get('volume_meaning') %}
+{{ clean(vdata.get('volume_meaning')) }}
+{%- endif %}
+
+📰 **NEWS**
+{%- if e.empty_news_disclosure %}
+{{ clean(e.empty_news_disclosure) }}
+{%- elif intel.get('latest_news') %}
+{{ clean(intel.get('latest_news')) }}
+{%- else %}
+No news found
+{%- endif %}
+{%- if intel.get('sentiment_summary') %}
+Mood: {{ clean(intel.get('sentiment_summary')) }}
+{%- endif %}
+{%- if intel.get('positive_catalysts') %}
+
+✨ **CATALYSTS**
+{%- for c in intel.get('positive_catalysts')[:2] %}
+- {{ clean(c) }}
+{%- endfor %}
+{%- endif %}
+{%- if intel.get('risk_alerts') %}
+
+🚨 **RISKS**
+{%- for r in intel.get('risk_alerts')[:2] %}
+- {{ clean(r) }}
+{%- endfor %}
+{%- endif %}
+{%- if phase.get('watch_conditions') %}
+
+👀 **WATCH AT THE OPEN**
+{%- for w in phase.get('watch_conditions')[:3] %}
+- {{ clean(w) }}
+{%- endfor %}
+{%- endif %}
+{%- if snap.get('source') %}
+
+Data: daily bar, quote source {{ clean(snap.get('source')) }}
+{%- endif %}
+{%- endfor %}
+
+━━━━━━━━━━━━━━
+Daily data only. No VWAP or 1-minute signals.
+{{ report_timestamp }}
