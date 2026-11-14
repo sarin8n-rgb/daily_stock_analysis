@@ -22,6 +22,10 @@ on:
         required: false
         default: false
         type: boolean
+      stocks:
+        description: Tickers to analyze, comma separated. Overrides STOCK_LIST
+        required: false
+        type: string
 
 # 并发控制：同一时间只运行一个分析任务
 concurrency:
@@ -438,6 +442,7 @@ jobs:
           REPORT_SHOW_LLM_MODEL: ${{ vars.REPORT_SHOW_LLM_MODEL || secrets.REPORT_SHOW_LLM_MODEL || 'true' }}
           REPORT_RENDERER_ENABLED: true
           REPORT_TEMPLATES_DIR: templates_scalper
+          INPUT_STOCKS: ${{ github.event.inputs.stocks }}
           SINGLE_STOCK_NOTIFY: ${{ vars.SINGLE_STOCK_NOTIFY || secrets.SINGLE_STOCK_NOTIFY || 'false' }}
           MARKET_REVIEW_ENABLED: ${{ vars.MARKET_REVIEW_ENABLED || secrets.MARKET_REVIEW_ENABLED || 'true' }}
           ANALYSIS_DELAY: ${{ vars.ANALYSIS_DELAY || secrets.ANALYSIS_DELAY || '0' }}
@@ -561,7 +566,7 @@ jobs:
           if [ "$MODE" = "market-only" ]; then
             python main.py --market-review $FORCE_RUN_ARG
           elif [ "$MODE" = "stocks-only" ]; then
-            python main.py --no-market-review $FORCE_RUN_ARG
+            python main.py --no-market-review $FORCE_RUN_ARG ${INPUT_STOCKS:+--stocks "$INPUT_STOCKS"}
           else
             python main.py $FORCE_RUN_ARG
           fi
