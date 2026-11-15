@@ -174,20 +174,61 @@ def sec_cik(ticker):
     return _CIK_MAP.get(ticker.upper().replace(".", "-")) or _CIK_MAP.get(ticker.upper())
 
 
-def fetch_filings(ticker, today=None):
-    """Offering-related SEC filings in the lookback window.
-    Returns None if SEC can't be checked, else [{'form','date','days_ago','kind'}]."""
-    cik = sec_cik(ticker)
-    if not cik:
-        return None
+def sec_submissions(cik):
+    """Recent filings straight from SEC EDGAR: (forms, dates) or None."""
     try:
         r = requests.get(f"https://data.sec.gov/submissions/CIK{cik:010d}.json", headers=SEC_UA, timeout=20)
         r.raise_for_status()
         recent = r.json()["filings"]["recent"]
+        return recent.get("form", []), recent.get("filingDate", [])
     except Exception as e:  # noqa: BLE001
-        log(f"  SEC filings failed: {e}")
+        log(f"  SEC submissions failed: {e}")
         return None
-    return classify_filings(recent.get("form", []), recent.get("filingDate", []), today)
+
+
+def yahoo_filings(tk):
+    """Yahoo's copy of the SEC filing list (can lag). [] if unavailable."""
+    try:
+        return list(tk.sec_filings or [])
+    except Exception as e:  # noqa: BLE001
+        log(f"  Yahoo filings failed: {e}")
+        return []
+
+
+def fetch_filings(ticker, tk=None, today=None):
+    """Offering-related SEC filings in the lookback window.
+    Tries SEC EDGAR first, then Yahoo's copy. Returns None if neither can be
+    checked, else [{'form','date','days_ago','kind'}]."""
+    today = today or datetime.now(PT).date()
+    cik = sec_cik(ticker)
+    ylist = None
+    if not cik and tk is not None:
+        ylist = yahoo_filings(tk)
+        for f in ylist:
+            m = re.search(r"_(\d{3,10})$", str(f.get("edgarUrl", "")))
+            if m:
+                cik = int(m.group(1))
+                break
+    if cik:
+        sub = sec_submissions(cik)
+        if sub:
+            log(f"  filings: SEC EDGAR (CIK {cik})")
+            return classify_filings(sub[0], sub[1], today)
+    if ylist is None and tk is not None:
+        ylist = yahoo_filings(tk)
+    if ylist:
+        rows = [(str(f.get("type", "")), str(f.get("date", ""))[:10]) for f in ylist]
+        newest = max((d for _, d in rows if d), default="")
+        try:
+            age = (today - datetime.strptime(newest, "%Y-%m-%d").date()).days
+        except ValueError:
+            age = 999
+        # Only trust Yahoo's list if it is clearly being kept up to date.
+        if age <= 45:
+            log(f"  filings: Yahoo copy (newest {newest})")
+            return classify_filings([f for f, _ in rows], [d for _, d in rows], today)
+        log(f"  filings: Yahoo copy too old (newest {newest or 'none'})")
+    return None
 
 
 def classify_filings(forms, dates, today=None):
@@ -440,7 +481,7 @@ def main():
         stats, tk = fetch_prices(yf, t)
         headlines = fetch_news(tk)
         news = read_news(t, headlines)
-        filings = fetch_filings(t)
+        filings = fetch_filings(t, tk)
         verdict, reasons = decide(stats, news, filings, market)
         log(f"  {verdict}: {'; '.join(reasons)} | headlines={len(headlines)} news_by={news['by']}")
         results.append({"ticker": t, "verdict": verdict, "reasons": reasons, "stats": stats, "news": news, "filings": filings})
