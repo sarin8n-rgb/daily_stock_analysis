@@ -1,0 +1,27 @@
+{
+ "updated": 1794786607,
+ "market": {
+  "state": "DOWN",
+  "text": "0/3 indexes above 20-day avg, SPY -0.6% vs last close"
+ },
+ "tickers": {
+  "ALOY": {
+   "verdict": "CAUTION",
+   "why": "SEC filings not checked; market down",
+   "news": "Generic macro news regarding U.S.-China rare earth leverage with no company-specific updates.",
+   "checked": 1794786607
+  },
+  "OMH": {
+   "verdict": "CAUTION",
+   "why": "SEC filings not checked; market down",
+   "news": "No headlines in the last 3 days",
+   "checked": 1794786607
+  },
+  "TKNO": {
+   "verdict": "CAUTION",
+   "why": "SEC filings not checked; market down",
+   "news": "No headlines in the last 3 days",
+   "checked": 1794786607
+  }
+ }
+}
