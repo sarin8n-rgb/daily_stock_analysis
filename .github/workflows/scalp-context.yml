@@ -1,0 +1,41 @@
+name: Scalp Context Check
+
+# Quick pre-trade check for small-cap long scalps: market, news, SEC filings, gap, liquidity.
+# Started from Telegram (/add, /check) or by hand from the Actions tab.
+on:
+  workflow_dispatch:
+    inputs:
+      stocks:
+        description: Tickers to check, comma separated
+        required: true
+        type: string
+
+concurrency:
+  group: scalp-context
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scalp
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: pip install --quiet yfinance requests
+      - name: Run context check
+        env:
+          INPUT_STOCKS: ${{ github.event.inputs.stocks }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scalp/scalp_context.py
