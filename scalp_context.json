@@ -1,5 +1,5 @@
 {
- "updated": 1794786792,
+ "updated": 1794802930,
  "market": {
   "state": "DOWN",
   "text": "0/3 indexes above 20-day avg, SPY -0.6% vs last close"
@@ -15,7 +15,7 @@
    "verdict": "CAUTION",
    "why": "market down",
    "news": "No headlines in the last 3 days",
-   "checked": 1794786792
+   "checked": 1794802930
   },
   "TKNO": {
    "verdict": "CAUTION",
