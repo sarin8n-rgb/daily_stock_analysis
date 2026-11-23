@@ -1,27 +1,21 @@
 {
- "updated": 1794802930,
+ "updated": 1795450692,
  "market": {
-  "state": "DOWN",
-  "text": "0/3 indexes above 20-day avg, SPY -0.6% vs last close"
+  "state": "MIXED",
+  "text": "0/3 indexes above 20-day avg, SPY +0.0% vs last close"
  },
  "tickers": {
-  "ALOY": {
-   "verdict": "CAUTION",
-   "why": "market down",
-   "news": "Generic geopolitical article regarding US and China rare earth tensions.",
-   "checked": 1794786792
+  "BNAI": {
+   "verdict": "GO",
+   "why": "volume 63.2x normal; market mixed",
+   "news": "No headlines in the last 3 days",
+   "checked": 1795450692
   },
   "OMH": {
    "verdict": "CAUTION",
-   "why": "market down",
+   "why": "no catalyst and normal volume",
    "news": "No headlines in the last 3 days",
-   "checked": 1794802930
-  },
-  "TKNO": {
-   "verdict": "CAUTION",
-   "why": "market down",
-   "news": "No headlines in the last 3 days",
-   "checked": 1794786792
+   "checked": 1795450692
   }
  }
 }
