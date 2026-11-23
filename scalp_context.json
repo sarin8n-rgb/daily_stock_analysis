@@ -1,5 +1,5 @@
 {
- "updated": 1795450738,
+ "updated": 1795451804,
  "market": {
   "state": "MIXED",
   "text": "0/3 indexes above 20-day avg, SPY +0.0% vs last close"
@@ -7,9 +7,9 @@
  "tickers": {
   "BNAI": {
    "verdict": "GO",
-   "why": "volume 63.3x normal; market mixed",
+   "why": "volume 69.9x normal; market mixed",
    "news": "No headlines in the last 3 days",
-   "checked": 1795450738
+   "checked": 1795451804
   },
   "OMH": {
    "verdict": "CAUTION",
@@ -19,9 +19,57 @@
   },
   "DWTX": {
    "verdict": "CAUTION",
-   "why": "can sell shares: S-3 filed 24d ago; volume 282.4x normal",
+   "why": "can sell shares: S-3 filed 24d ago; volume 288.3x normal",
    "news": "No headlines in the last 3 days",
-   "checked": 1795450738
+   "checked": 1795451804
+  },
+  "ARM": {
+   "verdict": "GO",
+   "why": "positive news; market mixed",
+   "news": "Arm CEO Haas stays through 2033, boosting stock 13% amid Nvidia speculation.",
+   "checked": 1795451804
+  },
+  "ASX": {
+   "verdict": "CAUTION",
+   "why": "no catalyst and normal volume",
+   "news": "No fresh company-specific news; articles discuss broader Asian ADRs and Taiwan short sale bans.",
+   "checked": 1795451804
+  },
+  "BRUN": {
+   "verdict": "GO",
+   "why": "positive news; market mixed",
+   "news": "Q3 2026 earnings revenue surges 496%.",
+   "checked": 1795451804
+  },
+  "CUE": {
+   "verdict": "GO",
+   "why": "volume 4.4x normal; market mixed",
+   "news": "No headlines in the last 3 days",
+   "checked": 1795451804
+  },
+  "RSSS": {
+   "verdict": "CAUTION",
+   "why": "news not classified; volume 101.6x normal",
+   "news": "Research Solutions Agrees $3.25 Per Share Cash Acquisition by KnowledgeWorks Global at 52% Premium",
+   "checked": 1795451804
+  },
+  "SKHY": {
+   "verdict": "GO",
+   "why": "positive news; market mixed",
+   "news": "Memory stocks rebound strongly led by SK Hynix and Micron rallies.",
+   "checked": 1795451804
+  },
+  "SNDK": {
+   "verdict": "GO",
+   "why": "positive news; market mixed",
+   "news": "SanDisk surges 22% on Jensen Huang's return to NVIDIA and AI memory demand.",
+   "checked": 1795451804
+  },
+  "UMC": {
+   "verdict": "CAUTION",
+   "why": "news not classified",
+   "news": "UMC Soars 21%, ASE Up 23% as Taiwan Bans Short Sales to Halt AI Chip Rout",
+   "checked": 1795451804
   }
  }
 }
