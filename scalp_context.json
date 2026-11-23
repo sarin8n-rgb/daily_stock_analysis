@@ -1,5 +1,5 @@
 {
- "updated": 1795450692,
+ "updated": 1795450738,
  "market": {
   "state": "MIXED",
   "text": "0/3 indexes above 20-day avg, SPY +0.0% vs last close"
@@ -7,15 +7,21 @@
  "tickers": {
   "BNAI": {
    "verdict": "GO",
-   "why": "volume 63.2x normal; market mixed",
+   "why": "volume 63.3x normal; market mixed",
    "news": "No headlines in the last 3 days",
-   "checked": 1795450692
+   "checked": 1795450738
   },
   "OMH": {
    "verdict": "CAUTION",
    "why": "no catalyst and normal volume",
    "news": "No headlines in the last 3 days",
    "checked": 1795450692
+  },
+  "DWTX": {
+   "verdict": "CAUTION",
+   "why": "can sell shares: S-3 filed 24d ago; volume 282.4x normal",
+   "news": "No headlines in the last 3 days",
+   "checked": 1795450738
   }
  }
 }
